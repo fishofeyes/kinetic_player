@@ -24,7 +24,7 @@ See [USAGE_EN.md](USAGE_EN.md) for the shared public API and cross-platform diff
 
 ```
 web/                              ← npm / TypeScript sources
-  package.json                    ← artplayer 5.4.0 + official plugins + hls.js / dashjs
+  package.json                    ← artplayer 5.4.0 + official plugins + hls.js 1.7.3 / dashjs 5.2.1
   src/
     artplayer_adapter.ts
     artplayer_web_bridge.ts

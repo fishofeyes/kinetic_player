@@ -1,7 +1,7 @@
 {
   "name": "kinetic-player-web",
   "private": true,
-  "version": "2.0.4",
+  "version": "2.1.1",
   "description": "Artplayer.js bridge for kinetic_player Flutter Web",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=iife --global-name=KineticArtplayerBundle --outfile=../assets/web/kinetic_artplayer.js --minify",
@@ -24,14 +24,14 @@
     "artplayer-plugin-multiple-subtitles": "1.2.0",
     "artplayer-plugin-vast": "1.0.0",
     "artplayer-plugin-vtt-thumbnail": "1.1.0",
-    "dashjs": "5.2.0",
-    "hls.js": "1.6.16"
+    "dashjs": "5.2.1",
+    "hls.js": "1.7.3"
   },
   "optionalDependencies": {
     "artplayer-plugin-danmuku-mask": "1.1.0"
   },
   "devDependencies": {
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "typescript": "7.0.2"
   }
 }

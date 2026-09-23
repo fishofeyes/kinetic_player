@@ -24,7 +24,7 @@ kinetic_player 在 **Flutter Web** 上使用 [Artplayer.js **5.4.0**](https://ar
 
 ```
 web/                              ← npm / TypeScript 源码
-  package.json                    ← artplayer 5.4.0 + 官方插件 + hls.js / dashjs
+  package.json                    ← artplayer 5.4.0 + 官方插件 + hls.js 1.7.3 / dashjs 5.2.1
   src/
     artplayer_adapter.ts          ← KineticArtplayerAdapter
     artplayer_web_bridge.ts       ← Dart JS interop 桥

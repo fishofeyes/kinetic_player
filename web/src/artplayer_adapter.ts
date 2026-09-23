@@ -8,6 +8,7 @@ import {
 } from './stream_types';
 import type {
   ArtPluginsConfig,
+  ArtplayerWithStream,
   AudioTrackInfo,
   KineticArtplayerConfig,
   PluginFactory,
@@ -417,12 +418,16 @@ export class KineticArtplayerAdapter {
 
   async switchVideoSource(url: string, autoPlay = true): Promise<void> {
     this.emitState(PlayerState.buffering);
+    this.destroyStreamEngines();
+    // Artplayer 5.4: reset clears the previous video request before switchUrl.
+    this.art.reset();
     const streamType = inferStreamType(url);
     if (streamType) {
-      (this.art as unknown as { option: { type?: string; customType?: CustomTypeMap } })
-        .option.type = streamType;
-      (this.art as unknown as { option: { customType?: CustomTypeMap } }).option.customType =
-        buildStreamCustomType(undefined, this.httpOptions);
+      this.art.option.type = streamType;
+      this.art.option.customType = buildStreamCustomType(
+        undefined,
+        this.httpOptions,
+      );
     }
     await this.art.switchUrl(url);
     if (autoPlay) {
@@ -430,6 +435,23 @@ export class KineticArtplayerAdapter {
     } else {
       this.emitState(PlayerState.ready);
     }
+  }
+
+  /** Tear down HLS/DASH engines attached by customType handlers. */
+  private destroyStreamEngines(): void {
+    const streamArt = this.art as ArtplayerWithStream;
+    try {
+      streamArt.hls?.destroy();
+    } catch {
+      // ignore
+    }
+    streamArt.hls = undefined;
+    try {
+      streamArt.dash?.reset();
+    } catch {
+      // ignore
+    }
+    streamArt.dash = undefined;
   }
 
   setHttpRequestOptions(options?: {
@@ -445,10 +467,10 @@ export class KineticArtplayerAdapter {
         ? { ...options.headers }
         : undefined;
     this.httpOptions = { userAgent, headers };
-    const option = (
-      this.art as unknown as { option: { customType?: CustomTypeMap } }
-    ).option;
-    option.customType = buildStreamCustomType(undefined, this.httpOptions);
+    this.art.option.customType = buildStreamCustomType(
+      undefined,
+      this.httpOptions,
+    );
   }
 
   getAudioTracks(): AudioTrackInfo[] {

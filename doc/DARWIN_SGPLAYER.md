@@ -79,7 +79,7 @@ bash darwin/scripts/sgplayer/<script>.sh ios|macos
 
 ```yaml
 dependencies:
-  kinetic_player: ^2.0.4   # 或 path / git
+  kinetic_player: ^2.1.1   # 或 path / git
 
 flutter:
   config:

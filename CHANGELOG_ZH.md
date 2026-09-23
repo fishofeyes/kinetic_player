@@ -1,3 +1,17 @@
+## 2.1.1
+
+### 新功能
+
+- **Web 流媒体依赖**：`hls.js` **1.7.3**、`dashjs` **5.2.1**（Artplayer 仍为 **5.4.0**）。换源时先销毁 HLS/DASH 引擎并调用 Artplayer `reset()`，再 `switchUrl`。
+
+### 修复
+
+- **Web artPlugins**：缺少 `vtt` 时跳过 `vttThumbnail`（避免 cue 解析空指针）；`hlsControl` / `dashControl` 软绑定，非 HLS/DASH 源不再抛 `Cannot find instance of HLS/DASH`。
+
+### 文档
+
+- WEB_ARTPLAYER：包树中补充 `hls.js` / `dashjs` 版本说明。
+
 ## 2.1.0
 
 ### 新功能

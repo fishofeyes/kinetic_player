@@ -71,7 +71,8 @@ export function buildStreamCustomType(
       if (Hls.isSupported()) {
         streamArt.hls?.destroy();
         const hls = new Hls({
-          xhrSetup: (xhr) => {
+          // hls.js 1.7: xhrSetup may receive (xhr, url, context); headers only need xhr.
+          xhrSetup: (xhr, _url) => {
             applyHeadersToXhr(xhr, headers);
           },
         });

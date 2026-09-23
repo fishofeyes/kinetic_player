@@ -372,12 +372,13 @@ class _PlayerDemoPageState extends State<PlayerDemoPage> {
               videoTitle: _selectedSource.label,
               locale: _chromeLocale,
             ),
-            artPlugins: const {
+            artPlugins: {
               ArtplayerPluginKeys.danmuku: true,
               ArtplayerPluginKeys.documentPip: true,
               ArtplayerPluginKeys.hlsControl: true,
               ArtplayerPluginKeys.dashControl: true,
-              ArtplayerPluginKeys.vttThumbnail: true,
+              if (_previewVttUri != null)
+                ArtplayerPluginKeys.vttThumbnail: {'vtt': _previewVttUri},
               ArtplayerPluginKeys.multipleSubtitles: true,
             },
           ).toCreationParams()

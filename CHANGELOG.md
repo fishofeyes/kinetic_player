@@ -1,3 +1,17 @@
+## 2.1.1
+
+### Features
+
+- **Web streaming deps**: `hls.js` **1.7.3**, `dashjs` **5.2.1** (Artplayer remains **5.4.0**). Source switch tears down HLS/DASH engines and calls Artplayer `reset()` before `switchUrl`.
+
+### Fixes
+
+- **Web artPlugins**: skip `vttThumbnail` when `vtt` is missing (avoids null cue parse crash); soft-bind `hlsControl` / `dashControl` so non-HLS/DASH sources no longer throw `Cannot find instance of HLS/DASH`.
+
+### Docs
+
+- WEB_ARTPLAYER: note `hls.js` / `dashjs` versions in the package tree.
+
 ## 2.1.0
 
 ### Features

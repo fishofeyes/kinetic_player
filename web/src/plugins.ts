@@ -15,7 +15,7 @@ import artplayerPluginMultipleSubtitles from 'artplayer-plugin-multiple-subtitle
 import artplayerPluginVast from 'artplayer-plugin-vast';
 import artplayerPluginVttThumbnail from 'artplayer-plugin-vtt-thumbnail';
 
-import type { ArtPluginsConfig, PluginFactory } from './types';
+import type { ArtPluginsConfig, ArtplayerWithStream, PluginFactory } from './types';
 
 /** Stable keys accepted from Dart `artPlugins` / webCustomExtensions. */
 export const ART_PLUGIN_KEYS = [
@@ -53,6 +53,67 @@ function asOption(value: unknown): Record<string, unknown> {
     return value as Record<string, unknown>;
   }
   return {};
+}
+
+type NamedPlugin = { name?: string; update?: () => void };
+
+/**
+ * Official hls/dash-control plugins throw on ready when art.hls / art.dash
+ * is missing (e.g. progressive MP4). Rebind update to no-op until the engine
+ * is attached so enabling the plugin is safe for mixed playlists.
+ */
+function softStreamControl(
+  art: Artplayer,
+  installed: NamedPlugin,
+  isReady: (art: Artplayer) => boolean,
+): NamedPlugin {
+  const originalUpdate = installed.update;
+  if (typeof originalUpdate !== 'function') return installed;
+
+  const safeUpdate = (): void => {
+    if (!isReady(art)) return;
+    originalUpdate.call(installed);
+  };
+
+  art.off('ready', originalUpdate);
+  art.off('restart', originalUpdate);
+  art.on('ready', safeUpdate);
+  art.on('restart', safeUpdate);
+
+  return { ...installed, update: safeUpdate };
+}
+
+function wrapHlsControl(
+  option: Parameters<typeof artplayerPluginHlsControl>[0],
+): PluginFactory {
+  const factory = artplayerPluginHlsControl(option);
+  return (art) => {
+    const installed = factory(art) as NamedPlugin;
+    return softStreamControl(art, installed, (a) => {
+      const stream = a as ArtplayerWithStream;
+      return Boolean(stream.hls && stream.hls.media === a.template.$video);
+    });
+  };
+}
+
+function wrapDashControl(
+  option: Parameters<typeof artplayerPluginDashControl>[0],
+): PluginFactory {
+  const factory = artplayerPluginDashControl(option);
+  return (art) => {
+    const installed = factory(art) as NamedPlugin;
+    return softStreamControl(art, installed, (a) => {
+      const stream = a as ArtplayerWithStream;
+      const dash = stream.dash as
+        | { getVideoElement?: () => HTMLVideoElement | null }
+        | undefined;
+      try {
+        return Boolean(dash && dash.getVideoElement?.() === a.template.$video);
+      } catch {
+        return false;
+      }
+    });
+  };
 }
 
 function loadScriptOnce(src: string, globalFlag: string): Promise<void> {
@@ -121,7 +182,7 @@ export async function resolveArtPlugins(
 
   if (isEnabled(config.hlsControl)) {
     plugins.push(
-      artplayerPluginHlsControl(
+      wrapHlsControl(
         asOption(config.hlsControl) as Parameters<typeof artplayerPluginHlsControl>[0],
       ),
     );
@@ -129,18 +190,23 @@ export async function resolveArtPlugins(
 
   if (isEnabled(config.dashControl)) {
     plugins.push(
-      artplayerPluginDashControl(
+      wrapDashControl(
         asOption(config.dashControl) as Parameters<typeof artplayerPluginDashControl>[0],
       ),
     );
   }
 
   if (isEnabled(config.vttThumbnail)) {
-    plugins.push(
-      artplayerPluginVttThumbnail(
-        asOption(config.vttThumbnail) as Parameters<typeof artplayerPluginVttThumbnail>[0],
-      ),
-    );
+    const option = asOption(config.vttThumbnail);
+    // Official plugin fetches option.vtt and parses cues via regex; missing/empty
+    // vtt throws "Cannot read properties of null (reading '1')".
+    if (typeof option['vtt'] === 'string' && option['vtt'].length > 0) {
+      plugins.push(
+        artplayerPluginVttThumbnail(
+          option as Parameters<typeof artplayerPluginVttThumbnail>[0],
+        ),
+      );
+    }
   }
 
   if (isEnabled(config.multipleSubtitles)) {

@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.version          = '2.1.1'
   s.summary          = 'Dual-core video player: SGPlayer on iOS and macOS.'
   s.description      = <<-DESC
-Flutter video player plugin. iOS / macOS use wanwenfeng4798/SGPlayer master; Android uses GSYVideoPlayer 13.1.0.
+Flutter video player plugin. iOS / macOS use wanwenfeng4798/SGPlayer master; Android uses GSYVideoPlayer 14.0.0.
 SGPlayer.xcframework via SPM remote binaryTarget (Package.swift) and/or
 CocoaPods prepare_command → ensure_sgplayer.sh (30-60 min only if local build).
                        DESC

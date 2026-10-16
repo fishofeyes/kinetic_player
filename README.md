@@ -6,11 +6,11 @@
 
 English version: [README_EN.md](README_EN.md)
 
-最强大的跨平台 Flutter 视频播放器插件：**Android** 使用 [GSYVideoPlayer 13.1.0](https://github.com/CarGuo/GSYVideoPlayer)，**iOS / macOS** 使用 [wanwenfeng4798/SGPlayer](https://github.com/wanwenfeng4798/SGPlayer)（master），**Web** 使用 [Artplayer.js 5.4.0](https://artplayer.org)，**Windows / Linux** 使用 [libmpv](https://mpv.io)。
+最强大的跨平台 Flutter 视频播放器插件：**Android** 使用 [GSYVideoPlayer 14.0.0](https://github.com/CarGuo/GSYVideoPlayer)，**iOS / macOS** 使用 [wanwenfeng4798/SGPlayer](https://github.com/wanwenfeng4798/SGPlayer)（master），**Web** 使用 [Artplayer.js 5.4.0](https://artplayer.org)，**Windows / Linux** 使用 [libmpv](https://mpv.io)。
 
 仓库：[github.com/wanwenfeng4798/kinetic_player](https://github.com/wanwenfeng4798/kinetic_player)
 
-需要 **Dart 3.12 / Flutter 3.44+**，并依赖 `material_ui: ^1.1.0`。
+需要 **Dart 3.13 / Flutter 3.47+**，并依赖 `material_ui: ^1.7.0`。
 
 ## 平台预览
 
@@ -123,7 +123,7 @@ CommonVideoPlayerViewBuilder(
 
 | 平台 | 内核 | 真机 / 桌面 | 模拟器 / 浏览器 | 画中画 |
 |------|------|-------------|-----------------|--------|
-| Android | GSYVideoPlayer 13.1.0 | ✅ | ✅ | ✅ 默认开启 |
+| Android | GSYVideoPlayer 14.0.0 | ✅ | ✅ | ✅ 默认开启 |
 | iOS | SGPlayer master | ✅ | ❌（FFmpeg 预编译仅 arm64 真机） | ❌ |
 | macOS | SGPlayer master | ✅ | ✅（`macosx` xcframework） | ❌ |
 | Web | Artplayer.js 5.4.0 | — | ✅ Chrome / Safari / 移动 Web | ✅ Video PiP；Document PiP 可选 |

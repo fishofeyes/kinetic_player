@@ -1,9 +1,9 @@
 {
   "version": "0.41.0",
-  "git": "e8673660ab",
+  "git": "a2cd83c56d",
   "source": "https://github.com/zhongfly/mpv-winbuild",
   "license": "LGPLv2.1+",
-  "asset_name": "mpv-dev-lgpl-x86_64-20260830-git-e8673660ab.7z",
-  "download_url": "https://github.com/zhongfly/mpv-winbuild/releases/download/2026-08-30-e8673660ab/mpv-dev-lgpl-x86_64-20260830-git-e8673660ab.7z",
+  "asset_name": "mpv-dev-lgpl-x86_64-20261015-git-a2cd83c56d.7z",
+  "download_url": "https://github.com/zhongfly/mpv-winbuild/releases/download/2026-10-15-a2cd83c56d/mpv-dev-lgpl-x86_64-20261015-git-a2cd83c56d.7z",
   "notes": "Windows x64 libmpv-2.dll from latest zhongfly LGPL build (mpv 0.41+ git). CMake extracts this archive at configure time. Override with KINETIC_PLAYER_LIBMPV_URL or place libmpv-2.dll in windows/mpv/vendor/. Headers in native/mpv/include are mpv v0.41.0 (client API 2.5)."
 }

@@ -45,7 +45,7 @@ HEVC 10-bit 编码，是发烧友测试显示设备 HDR 映射能力的金标准
 
 | 平台 | 内核 | 真机 | 模拟器 | 画中画 |
 |---|---|---|---|---|
-| Android | GSYVideoPlayer 13.1.0 | ✅ | ✅ | ✅ 默认开启 |
+| Android | GSYVideoPlayer 14.0.0 | ✅ | ✅ | ✅ 默认开启 |
 | iOS | SGPlayer master | ✅ | ❌（FFmpeg 预编译仅 arm64 真机） | ❌ |
 | macOS | SGPlayer master | ✅ | ✅（`macosx` xcframework） | ❌ |
 

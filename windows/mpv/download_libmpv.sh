@@ -18,7 +18,7 @@ if [[ -z "${URL}" && -f "${MANIFEST}" ]]; then
   URL="$(python3 -c "import json; print(json.load(open('${MANIFEST}'))['download_url'])" 2>/dev/null || true)"
 fi
 if [[ -z "${URL}" ]]; then
-  URL="https://github.com/zhongfly/mpv-winbuild/releases/download/2026-08-30-e8673660ab/mpv-dev-lgpl-x86_64-20260830-git-e8673660ab.7z"
+  URL="https://github.com/zhongfly/mpv-winbuild/releases/download/2026-10-15-a2cd83c56d/mpv-dev-lgpl-x86_64-20261015-git-a2cd83c56d.7z"
 fi
 
 TMP="$(mktemp -d)"

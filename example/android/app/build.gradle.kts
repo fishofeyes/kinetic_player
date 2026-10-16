@@ -17,7 +17,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.example.kinetic_player_example"
     compileSdk = 37
-    ndkVersion = "30.0.15729638"
+    buildToolsVersion = "37.0.0"
+    ndkVersion = "30.0.16248370"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -63,7 +64,7 @@ android {
         }
     }
     signingConfigs {
-        create("release") {
+        if (keystorePropertiesFile.exists()) create("release") {
             keyAlias = localProperties["keyAlias"] as String
             keyPassword = localProperties["keyPassword"] as String
             storeFile = localProperties["storeFile"]?.let { file(it as String) }
@@ -85,7 +86,7 @@ android {
             ndk {
                 debugSymbolLevel = "NONE"
             }
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
             isShrinkResources = true

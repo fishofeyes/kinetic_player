@@ -1,7 +1,7 @@
 /// Pinned native SDK versions for the dual-core player plugin.
 abstract final class NativeSdkVersions {
   /// Android GSYVideoPlayer (Maven Central).
-  static const String gsyVideoPlayer = '13.1.0';
+  static const String gsyVideoPlayer = '14.0.0';
 
   /// iOS SGPlayer git branch (source builds).
   static const String sgPlayerBranch = 'master';

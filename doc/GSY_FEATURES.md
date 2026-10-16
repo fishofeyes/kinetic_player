@@ -2,7 +2,7 @@
 
 English version: [GSY_FEATURES_EN.md](GSY_FEATURES_EN.md)
 
-Android 侧基于 **GSYVideoPlayer 13.1.0**（`io.github.carguo:gsyvideoplayer-*`）。iOS / macOS 见 [DARWIN_SGPLAYER.md](DARWIN_SGPLAYER.md)；Web 见 [WEB_ARTPLAYER.md](WEB_ARTPLAYER.md)。本文仅覆盖 **已完整交付** 的 Android GSY 能力。
+Android 侧基于 **GSYVideoPlayer 14.0.0**（`io.github.carguo:gsyvideoplayer-*`）。iOS / macOS 见 [DARWIN_SGPLAYER.md](DARWIN_SGPLAYER.md)；Web 见 [WEB_ARTPLAYER.md](WEB_ARTPLAYER.md)。本文仅覆盖 **已完整交付** 的 Android GSY 能力。
 
 ## 图例
 
@@ -67,7 +67,7 @@ Android 侧基于 **GSYVideoPlayer 13.1.0**（`io.github.carguo:gsyvideoplayer-*
 | IJKPlayer | ✅ | `gsySwitchRenderCore(GsyRenderCore.ijk)`（**插件默认**；Maven 包为 **arm64**） |
 | Media3 (Exo2) | ✅ | `gsySwitchRenderCore(GsyRenderCore.exo)` |
 | MediaPlayer | ✅ | `gsySwitchRenderCore(GsyRenderCore.system)` |
-| AliPlayer | ❌ | Maven 13.1.0 无此模块 |
+| AliPlayer | ❌ | 插件未引入可选 gsyvideoplayer-aliplay 模块 |
 
 **大文件 / 远程 MKV**：`cacheWithPlay: true`（默认）走 HttpProxyCache，大文件易超时；请设 `cacheWithPlay: false`。
 

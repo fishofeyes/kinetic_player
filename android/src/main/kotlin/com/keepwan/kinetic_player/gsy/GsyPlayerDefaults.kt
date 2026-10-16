@@ -30,6 +30,8 @@ object GsyPlayerDefaults {
     fun applyIjkOptions(enableAccurateSeek: Boolean) {
         val options =
             mutableListOf(
+                // GSY 14 software time stretching supports 0.25x–4x across devices.
+                VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "soundtouch", 1),
                 // Network / demuxer timeouts for large remote progressive files.
                 VideoOptionModel(
                     IjkMediaPlayer.OPT_CATEGORY_FORMAT,

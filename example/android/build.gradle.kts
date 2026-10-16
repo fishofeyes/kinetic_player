@@ -11,15 +11,14 @@ val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build"
 rootProject.layout.buildDirectory.value(newBuildDir)
 
 subprojects {
+    // Keep example plugins on the same installed stable SDK/NDK toolchain.
     afterEvaluate {
         if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
             extensions.configure<com.android.build.gradle.BaseExtension> {
                 compileSdkVersion(37)
                 buildToolsVersion = "37.0.0"
-                ndkVersion = "30.0.15729638" 
-                if (namespace == null) {
-                    namespace = project.group.toString()
-                }
+                ndkVersion = "30.0.16248370"
+                if (namespace == null) namespace = project.group.toString()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.keepwan.kinetic_player
 
+import com.shuyu.gsyvideoplayer.GSYVideoManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.platform.PlatformViewRegistry
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -18,7 +19,15 @@ class KineticPlayerPluginTest {
         Mockito.`when`(binding.platformViewRegistry).thenReturn(registry)
         Mockito.`when`(binding.binaryMessenger).thenReturn(messenger)
 
-        plugin.onAttachedToEngine(binding)
+        val manager = Mockito.mock(GSYVideoManager::class.java)
+        // Engine attachment configures GSY; a JVM test has no Android Looper.
+        Mockito.mockStatic(GSYVideoManager::class.java).use { singleton ->
+            singleton.`when`<GSYVideoManager> { GSYVideoManager.instance() }.thenReturn(manager)
+            plugin.onAttachedToEngine(binding)
+            Mockito.verify(manager).setOptionModelList(Mockito.argThat { options ->
+                options.any { it.name == "soundtouch" && it.valueInt == 1 }
+            })
+        }
 
         val viewTypeCaptor = ArgumentCaptor.forClass(String::class.java)
         Mockito.verify(registry, Mockito.times(1))

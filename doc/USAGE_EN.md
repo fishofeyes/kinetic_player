@@ -2,7 +2,7 @@
 
 Chinese version: [USAGE.md](USAGE.md)
 
-Minimum SDK: **Dart 3.12 / Flutter 3.44**. Host apps should depend on `material_ui: ^1.1.0` and `import 'package:material_ui/material_ui.dart'` (do not `import package:flutter/material.dart`).
+Minimum SDK: **Dart 3.13 / Flutter 3.47**. Host apps should depend on `material_ui: ^1.7.0` and `import 'package:material_ui/material_ui.dart'` (do not `import package:flutter/material.dart`).
 
 ## Architecture Overview
 
@@ -56,9 +56,9 @@ flutter:
 
 No extra steps are required. GSYVideoPlayer pulls dependencies automatically via Gradle Maven:
 
-- `io.github.carguo:gsyvideoplayer-java:13.1.0`
-- `io.github.carguo:gsyvideoplayer-exo2:13.1.0`
-- `io.github.carguo:gsyvideoplayer-arm64:13.1.0`
+- `io.github.carguo:gsyvideoplayer-java:14.0.0`
+- `io.github.carguo:gsyvideoplayer-exo2:14.0.0`
+- `io.github.carguo:gsyvideoplayer-arm64:14.0.0`
 
 **Picture-in-Picture (PiP)** requires declaring the host activity in `AndroidManifest.xml`:
 

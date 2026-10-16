@@ -1,3 +1,13 @@
+## Unreleased
+
+- **Stable dependency audit (2026-10-16)**: GSYVideoPlayer **14.0.0**, AGP **9.4.1**, Kotlin **2.4.21**, example Gradle **9.8.1** with distribution SHA-256 verification; Mockito **5.24.0**, Kotlin JUnit adapter and JUnit **6.1.3** engine. Enable built-in Kotlin, retain `android.newDsl=false` for Flutter 3.47, and align example subprojects with SDK Build Tools **37.0.0** / NDK **30.0.16248370**. The example falls back to debug signing when release signing is absent.
+- **GSY 14 migration**: IJK now bundles FFmpeg n5.1.10 / OpenSSL 3.5.9 and upstream session, buffering, RTSP and decoder fixes. Enable SoundTouch by default and align Dart, initial configuration and native rate controls for pitch-preserving IJK playback (0.25×–4×); apply runtime changes through `setSpeedPlaying`. New multi-pass/LUT rendering and optional cast/RTMP/Compose modules are not automatically exposed through the Flutter API. See [upstream release notes](https://github.com/CarGuo/GSYVideoPlayer/blob/v14.0.0/doc/UPDATE_VERSION.md).
+- **Flutter**: `material_ui` **1.7.0**; align minimum SDKs to **Dart 3.13 / Flutter 3.47**. Reviewed 1.5–1.7 changes; existing widget calls remain compatible. `web`, `path_provider`, `flutter_lints` and Web direct dependencies already match the latest stable releases.
+- **Web**: migrate DASH request headers to dash.js 5 asynchronous `addRequestInterceptor`, preserving existing headers for Fetch/XHR; rebuild the shipped JS bundle and refresh npm transitive dependencies.
+- **Desktop / Darwin**: update the Windows LGPL libmpv build to **2026-10-15 / a2cd83c56d** in CMake, download script and manifest. Official stable mpv remains **0.41.0**; keep the Linux system-library minimum. SGPlayer iOS/macOS **1.0.0** are still the latest published binaries in this repository.
+- **SDK-pinned transitives**: `material_color_utilities` **0.13.0** and `test_api` **0.7.12** remain fixed by Flutter 3.47.7; newer published versions cannot resolve without changing Flutter SDK pins.
+- **Validation**: Dart analysis and 17 Flutter tests pass; Web type checking, 3 bridge regression tests and example Web build pass; Android Debug/Release (R8 enabled) APK builds and the native JVM test pass. Device playback and Windows/iOS/macOS runtime behavior were not exercised.
+
 ## 2.1.1
 
 ### Features

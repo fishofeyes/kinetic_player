@@ -46,7 +46,7 @@ These clips help validate HDR color handling in movie-like scenarios.
 
 | Platform | Core | Real device | Simulator | PiP |
 |---|---|---|---|---|
-| Android | GSYVideoPlayer 13.1.0 | ✅ | ✅ | ✅ Enabled by default |
+| Android | GSYVideoPlayer 14.0.0 | ✅ | ✅ | ✅ Enabled by default |
 | iOS | SGPlayer master | ✅ | ❌ (prebuilt FFmpeg is arm64 only) | ❌ |
 | macOS | SGPlayer master | ✅ | ✅ (macosx xcframework) | ❌ |
 

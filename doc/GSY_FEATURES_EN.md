@@ -2,7 +2,7 @@
 
 Chinese: [GSY_FEATURES.md](GSY_FEATURES.md)
 
-Android uses **GSYVideoPlayer 13.1.0**. This doc lists **fully delivered** Android GSY features only.
+Android uses **GSYVideoPlayer 14.0.0**. This doc lists **fully delivered** Android GSY features only.
 
 ## Legend
 
@@ -22,7 +22,7 @@ Android uses **GSYVideoPlayer 13.1.0**. This doc lists **fully delivered** Andro
 | List scroll auto-play | ✅ | `GsyAutoPlayVideoList` (ListView-relative play window; not ListGSYVideoPlayer; not detail seamless) |
 | Multi-instance simultaneous play | ❌ | GSY singleton manager |
 | Detail seamless handoff | ❌ | Removed (`gsySeamlessHandoffParams` deleted) |
-| AliPlayer / customRatio | ❌ | Removed / unavailable |
+| AliPlayer | ❌ | Optional `gsyvideoplayer-aliplay` module is not included |
 | Pure play mode | ✅ | Hides gestures, chrome buttons, volume, settings, title |
 | Chrome locale | ✅ | `KineticUiConfig.locale` + `setLocale` / `KineticChromeStrings`: `zh` / `en` / `vi` / `ms` / `id` / `fil` |
 | Subtitles / GIF / screenshot / rotation / mirror / filters | ✅ | Follow fullscreen window when applicable. Settings screenshot: PNG bytes + `onScreenshotCaptured` (host saves). Record GIF on Android |

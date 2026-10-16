@@ -680,7 +680,7 @@ open class KineticGSYVideoPlayer : StandardGSYVideoPlayer {
                     setTextColor(if (selected) accentColor else Color.WHITE)
                     setOnClickListener {
                         chromeRate = rate
-                        setSpeed(rate, true)
+                        setSpeedPlaying(rate, true)
                         updateRateTriggerLabel()
                         hideRatePanel()
                     }
@@ -1051,7 +1051,7 @@ open class KineticGSYVideoPlayer : StandardGSYVideoPlayer {
         setShowDragProgressTextOnSeekBar(config.showDragProgressTextOnSeekBar)
         setDismissControlTime(config.dismissControlTime)
         setSeekRatio(config.seekRatio)
-        setSpeed(config.speed, false)
+        setSpeed(config.speed, true)
         setLooping(config.looping)
         setAutoFullWithSize(config.autoFullWithSize)
         setNeedLockFull(config.showLockButton)
@@ -1138,7 +1138,7 @@ open class KineticGSYVideoPlayer : StandardGSYVideoPlayer {
         }
     }
 
-    private fun decodeCoverBitmap(url: String) =
+    private fun decodeCoverBitmap(url: String): android.graphics.Bitmap? =
         when {
             url.startsWith("http://", ignoreCase = true) ||
                 url.startsWith("https://", ignoreCase = true) -> {

@@ -246,7 +246,7 @@ class GsyNativePlayer(
 
     fun setSpeed(speed: Float) {
         uiConfig = uiConfig.copy(speed = speed)
-        playerView.setSpeed(speed, false)
+        activePlayer().setSpeedPlaying(speed, true)
     }
 
     fun setLooping(looping: Boolean) {
@@ -351,6 +351,7 @@ class GsyNativePlayer(
                 .setDismissControlTime(uiConfig.dismissControlTime)
                 .setSeekRatio(uiConfig.seekRatio)
                 .setSpeed(uiConfig.speed)
+                .setSoundTouch(true)
                 .setLooping(uiConfig.looping)
                 .setAutoFullWithSize(uiConfig.autoFullWithSize)
                 .setNeedLockFull(uiConfig.showLockButton)

@@ -2,14 +2,14 @@ group = "com.keepwan.kinetic_player"
 version = "2.1.1"
 
 buildscript {
-    val kotlinVersion = "2.4.10"
+    val kotlinVersion = "2.4.21"
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:9.3.2")
+        classpath("com.android.tools.build:gradle:9.4.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
@@ -31,6 +31,7 @@ android {
     namespace = "com.keepwan.kinetic_player"
 
     compileSdk = 37
+    buildToolsVersion = "37.0.0"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -74,14 +75,17 @@ kotlin {
 }
 
 dependencies {
-    val gsyVersion = "13.2.1"
+    val gsyVersion = "14.0.0"
 
-    // Android-only: GSYVideoPlayer v13.1.0 (Maven Central, recommended).
+    // Android-only: GSYVideoPlayer v14.0.0 (Maven Central, recommended).
     implementation("io.github.carguo:gsyvideoplayer-java:$gsyVersion")
     implementation("io.github.carguo:gsyvideoplayer-exo2:$gsyVersion")
     implementation("io.github.carguo:gsyvideoplayer-arm64:$gsyVersion")
     implementation("com.github.bilibili:DanmakuFlameMaster:0.9.25")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.mockito:mockito-core:5.0.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.4.21")
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.24.0")
 }

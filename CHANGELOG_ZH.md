@@ -1,3 +1,13 @@
+## Unreleased
+
+- **依赖核对（2026-10-16，稳定版）**：GSYVideoPlayer **14.0.0**、AGP **9.4.1**、Kotlin **2.4.21**、示例 Gradle **9.8.1**（校验分发包 SHA-256）；Mockito **5.24.0**，补齐 Kotlin/JUnit 5 适配器与 JUnit **6.1.3** 运行引擎。示例启用 AGP 内建 Kotlin；Flutter 3.47 仍需 `android.newDsl=false`。示例子项目统一使用 SDK Build Tools **37.0.0** / NDK **30.0.16248370**。没有签名配置时示例使用 debug 签名。
+- **GSY 14 迁移**：原生 IJK 库更新至 FFmpeg n5.1.10 / OpenSSL 3.5.9，并包含会话隔离、缓冲进度、RTSP 与解码器修复。默认启用 SoundTouch，统一 Dart API、初始配置和原生倍速菜单的变速不变调模式（IJK 0.25×–4×），播放中通过 `setSpeedPlaying` 应用。新增多 pass / LUT 等渲染与可选 cast/RTMP/Compose 模块未自动加入现有 Flutter API。见 [上游发布说明](https://github.com/CarGuo/GSYVideoPlayer/blob/v14.0.0/doc/UPDATE_VERSION.md)。
+- **Flutter 依赖**：`material_ui` **1.7.0**；最低要求对齐 **Dart 3.13 / Flutter 3.47**。检查 1.5–1.7 更新，现有组件调用无需改动。`web`、`path_provider`、`flutter_lints` 及 Web 直接依赖已是最新稳定版。
+- **Web 兼容修复**：DASH 自定义请求头改用 dash.js 5 的异步 `addRequestInterceptor`，保留原有请求头并兼容 Fetch/XHR；重新生成发布使用的 JS bundle，并更新 npm 传递依赖。
+- **桌面 / Darwin**：Windows LGPL libmpv 预编译包更新至 **2026-10-15 / a2cd83c56d**，同步 CMake、下载脚本及 manifest。官方 mpv 稳定版仍为 **0.41.0**，Linux 系统库最低要求保持不变；SGPlayer 现有 iOS/macOS **1.0.0** 是仓库最新预编译版本。
+- **SDK 固定的传递依赖**：`material_color_utilities` **0.13.0** 与 `test_api` **0.7.12** 由 Flutter 3.47.7 固定，已确认其新版无法在当前 SDK 约束下解析。
+- **验证**：Dart 静态分析、17 项 Flutter 测试、Web 类型检查、3 项桥接回归测试与 Web 示例构建通过；Android Debug / Release（启用 R8）APK 构建及原生 JVM 单测通过。尚未进行真机播放与 Windows / iOS / macOS 运行验证。
+
 ## 2.1.1
 
 ### 新功能

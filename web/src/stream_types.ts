@@ -96,13 +96,10 @@ export function buildStreamCustomType(
       streamArt.dash?.reset();
       const player = dashjs.MediaPlayer().create();
       if (Object.keys(headers).length > 0) {
-        player.extendRequestModifier({
-          modifyRequestHeader: (request) => {
-            for (const [key, value] of Object.entries(headers)) {
-              request.setRequestHeader(key, value);
-            }
-            return request;
-          },
+        // dash.js 5 uses asynchronous request interceptors for XHR and Fetch.
+        player.addRequestInterceptor(async (request) => {
+          request.headers = { ...request.headers, ...headers };
+          return request;
         });
       }
       player.initialize(video, url, false);

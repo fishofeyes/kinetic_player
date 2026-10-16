@@ -2,7 +2,7 @@
 
 English version: [USAGE_EN.md](USAGE_EN.md)
 
-最低 SDK：**Dart 3.12 / Flutter 3.44**。宿主应用请依赖 `material_ui: ^1.1.0`，并 `import 'package:material_ui/material_ui.dart'`（不要再 `import package:flutter/material.dart`）。
+最低 SDK：**Dart 3.13 / Flutter 3.47**。宿主应用请依赖 `material_ui: ^1.7.0`，并 `import 'package:material_ui/material_ui.dart'`（不要再 `import package:flutter/material.dart`）。
 
 ## 架构概览
 
@@ -64,9 +64,9 @@ flutter:
 
 无需额外步骤。GSYVideoPlayer 通过 Gradle Maven 依赖自动拉取：
 
-- `io.github.carguo:gsyvideoplayer-java:13.1.0`
-- `io.github.carguo:gsyvideoplayer-exo2:13.1.0`
-- `io.github.carguo:gsyvideoplayer-arm64:13.1.0`
+- `io.github.carguo:gsyvideoplayer-java:14.0.0`
+- `io.github.carguo:gsyvideoplayer-exo2:14.0.0`
+- `io.github.carguo:gsyvideoplayer-arm64:14.0.0`
 
 **画中画（PiP）** 需在宿主 Activity 的 `AndroidManifest.xml` 中声明：
 

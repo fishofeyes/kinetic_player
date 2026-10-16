@@ -2,14 +2,14 @@
 
 The strongest cross-platform Flutter video player plugin for **Android / iOS / macOS / Web / Windows / Linux**.
 
-- **Android**: [GSYVideoPlayer 13.1.0](https://github.com/CarGuo/GSYVideoPlayer)
+- **Android**: [GSYVideoPlayer 14.0.0](https://github.com/CarGuo/GSYVideoPlayer)
 - **iOS / macOS**: [wanwenfeng4798/SGPlayer](https://github.com/wanwenfeng4798/SGPlayer) (**master**)
 - **Web**: [Artplayer.js 5.4.0](https://artplayer.org)
 - **Windows / Linux**: [libmpv](https://mpv.io)
 
 Repo: [github.com/wanwenfeng4798/kinetic_player](https://github.com/wanwenfeng4798/kinetic_player)
 
-Requires **Dart 3.12 / Flutter 3.44+** and `material_ui: ^1.1.0`.
+Requires **Dart 3.13 / Flutter 3.47+** and `material_ui: ^1.7.0`.
 
 ## Platform previews
 
@@ -122,7 +122,7 @@ If you specifically need a GStreamer pipeline, the separate [GstPlayer](https://
 
 | Platform | Core | Device / desktop | Simulator / browser | PiP |
 |---|---|---|---|---|
-| Android | GSYVideoPlayer 13.1.0 | ✅ | ✅ | ✅ (enabled by default) |
+| Android | GSYVideoPlayer 14.0.0 | ✅ | ✅ | ✅ (enabled by default) |
 | iOS | SGPlayer master | ✅ | ❌ (prebuilt FFmpeg is arm64 only) | ❌ |
 | macOS | SGPlayer master | ✅ | ✅ (macosx xcframework) | ❌ |
 | Web | Artplayer.js 5.4.0 | — | ✅ Chrome / Safari / mobile Web | ✅ Video PiP; Document PiP optional |

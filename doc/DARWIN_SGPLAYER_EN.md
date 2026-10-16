@@ -77,7 +77,7 @@ Both platforms follow the same workflow; only change the platform argument: `ios
 
 ```yaml
 dependencies:
-  kinetic_player: ^2.1.1   # or path / git
+  kinetic_player: ^2.1.2   # or path / git
 
 flutter:
   config:

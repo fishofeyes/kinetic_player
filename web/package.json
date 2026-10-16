@@ -1,7 +1,7 @@
 {
   "name": "kinetic-player-web",
   "private": true,
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Artplayer.js bridge for kinetic_player Flutter Web",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=iife --global-name=KineticArtplayerBundle --outfile=../assets/web/kinetic_artplayer.js --minify",

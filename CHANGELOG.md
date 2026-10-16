@@ -1,4 +1,4 @@
-## Unreleased
+## 2.1.2
 
 - **Stable dependency audit (2026-10-16)**: GSYVideoPlayer **14.0.0**, AGP **9.4.1**, Kotlin **2.4.21**, example Gradle **9.8.1** with distribution SHA-256 verification; Mockito **5.24.0**, Kotlin JUnit adapter and JUnit **6.1.3** engine. Enable built-in Kotlin, retain `android.newDsl=false` for Flutter 3.47, and align example subprojects with SDK Build Tools **37.0.0** / NDK **30.0.16248370**. The example falls back to debug signing when release signing is absent.
 - **GSY 14 migration**: IJK now bundles FFmpeg n5.1.10 / OpenSSL 3.5.9 and upstream session, buffering, RTSP and decoder fixes. Enable SoundTouch by default and align Dart, initial configuration and native rate controls for pitch-preserving IJK playback (0.25×–4×); apply runtime changes through `setSpeedPlaying`. New multi-pass/LUT rendering and optional cast/RTMP/Compose modules are not automatically exposed through the Flutter API. See [upstream release notes](https://github.com/CarGuo/GSYVideoPlayer/blob/v14.0.0/doc/UPDATE_VERSION.md).

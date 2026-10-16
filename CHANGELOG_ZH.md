@@ -1,4 +1,4 @@
-## Unreleased
+## 2.1.2
 
 - **依赖核对（2026-10-16，稳定版）**：GSYVideoPlayer **14.0.0**、AGP **9.4.1**、Kotlin **2.4.21**、示例 Gradle **9.8.1**（校验分发包 SHA-256）；Mockito **5.24.0**，补齐 Kotlin/JUnit 5 适配器与 JUnit **6.1.3** 运行引擎。示例启用 AGP 内建 Kotlin；Flutter 3.47 仍需 `android.newDsl=false`。示例子项目统一使用 SDK Build Tools **37.0.0** / NDK **30.0.16248370**。没有签名配置时示例使用 debug 签名。
 - **GSY 14 迁移**：原生 IJK 库更新至 FFmpeg n5.1.10 / OpenSSL 3.5.9，并包含会话隔离、缓冲进度、RTSP 与解码器修复。默认启用 SoundTouch，统一 Dart API、初始配置和原生倍速菜单的变速不变调模式（IJK 0.25×–4×），播放中通过 `setSpeedPlaying` 应用。新增多 pass / LUT 等渲染与可选 cast/RTMP/Compose 模块未自动加入现有 Flutter API。见 [上游发布说明](https://github.com/CarGuo/GSYVideoPlayer/blob/v14.0.0/doc/UPDATE_VERSION.md)。

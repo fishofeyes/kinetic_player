@@ -12,6 +12,28 @@ English version: [README_EN.md](README_EN.md)
 
 需要 **Dart 3.13 / Flutter 3.47+**，并依赖 `material_ui: ^1.7.0`。
 
+## 使用 video_player 调用方式
+
+保留插件原有类名，使用类似 `video_player` 的控制器生命周期：
+
+```dart
+import 'package:kinetic_player/kinetic_player.dart';
+
+// 初始化不依赖 CommonVideoPlayerView 组件先出现在页面上。
+final controller = CommonVideoController.networkUrl(Uri.parse(videoUrl));
+await controller.initialize();
+await controller.play();
+// 页面中：AspectRatio(aspectRatio: controller.value.aspectRatio,
+//                   child: CommonVideoPlayerView(controller: controller))
+// 不再使用时：await controller.dispose();
+```
+
+`CommonVideoController` 新增来源构造器、`initialize()`、`value` 和监听，`CommonVideoPlayerView` 新增 `controller` 参数。各平台控制器、工厂、状态、尺寸等原有类名不变，旧的视图创建方式继续保留。底层仍使用 GSY / SGPlayer / Artplayer / MPV。
+
+来源构造器会启用内部 Kinetic 后端，无需业务层调用新类名。该后端也会作用于同一 isolate 后续创建的官方 `video_player` 控制器，不能在其他后端已有播放会话时混用。
+
+完整说明及边界见 [video_player 接入说明](doc/video_player_usage.md)，独立示例见 [video_player_demo.dart](example/lib/video_player_demo.dart)。修改包含原生代码，接入后需要完整停止并重新构建，不能只 Hot Reload。
+
 ## 平台预览
 
 | Android | iOS |
@@ -72,7 +94,7 @@ flutter:
 
 **SPM（推荐）：** 插件已随包发布 `Package.swift` + 源码；Xcode 解析时按远程 `binaryTarget` 自动下载 `SGPlayer.xcframework`。macOS 请将 `MACOSX_DEPLOYMENT_TARGET` 设为 **11.0+**。若 Xcode 直编报包装包版本冲突，见 [DARWIN_SGPLAYER.md](doc/DARWIN_SGPLAYER.md#spm-包装包最低版本) 手动修改 `FlutterGeneratedPluginSwiftPackage`。
 
-**CocoaPods：** `pod install` 经 `prepare_command` 调用 `ensure_sgplayer.sh`（下载预编译；失败再本地编译）。
+**CocoaPods：** `prepare_command` 配有 `ensure_sgplayer.sh`（下载预编译；失败再本地编译）。本地路径引用或已有 Pods 的增量安装中，不应假定准备命令一定重新执行。首次使用本地包时，先在插件根目录执行 `bash darwin/scripts/sgplayer/download_sgplayer.sh ios`，再到宿主 App 的 `ios` 目录执行 `pod install`。缺少框架时会在 `SgNativePlayerBridge.m` 报 `SGPlayer/SGPlayer.h file not found`，导入语句本身无需修改。macOS 按需把下载参数换成 `macos`。
 
 维护者更新 Release / manifest 后重生成 `Package.swift`，或强制本地编译，见 Darwin 文档。
 

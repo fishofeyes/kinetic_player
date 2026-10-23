@@ -95,6 +95,7 @@ class MpvPlayer {
   bool SelectVideoTrack(int index);
   MpvNetSpeed GetNetSpeed();
   MpvVideoSize GetVideoSize() const;
+  int64_t GetDurationMs();
   std::vector<uint8_t> CapturePng();
   void SetHwdec(const std::string& hwdec);
   void SetHttpRequestOptions(const std::string& user_agent,

@@ -392,6 +392,13 @@ class PlayerSlot {
       fl_value_set_string_take(map, "width", fl_value_new_int(size.width));
       fl_value_set_string_take(map, "height", fl_value_new_int(size.height));
       response = FL_METHOD_RESPONSE(fl_method_success_response_new(map));
+    } else if (g_strcmp0(method, "getVideoMetadata") == 0) {
+      const auto size = player_->GetVideoSize();
+      g_autoptr(FlValue) map = fl_value_new_map();
+      fl_value_set_string_take(map, "width", fl_value_new_int(size.width));
+      fl_value_set_string_take(map, "height", fl_value_new_int(size.height));
+      fl_value_set_string_take(map, "duration", fl_value_new_int(player_->GetDurationMs()));
+      response = FL_METHOD_RESPONSE(fl_method_success_response_new(map));
     } else if (g_strcmp0(method, "setLooping") == 0) {
       player_->SetLooping(FlMapBool(args, "looping", false));
       response = FL_METHOD_RESPONSE(fl_method_success_response_new(nullptr));
@@ -523,6 +530,7 @@ struct PluginState {
   FlMethodChannel* channel = nullptr;
   int next_id = 1;
   std::map<int, std::unique_ptr<PlayerSlot>> players;
+  std::map<int, bool> controller_players;
 };
 
 void PluginHandle(FlMethodChannel*, FlMethodCall* call, gpointer user_data) {
@@ -543,15 +551,27 @@ void PluginHandle(FlMethodChannel*, FlMethodCall* call, gpointer user_data) {
       slot->ApplyCreate(args);
       const int64_t texture_id = slot->texture_id();
       state->players[view_id] = std::move(slot);
+      if (FlMapBool(args, "controllerOwned", false)) state->controller_players[view_id] = true;
       g_autoptr(FlValue) map = fl_value_new_map();
       fl_value_set_string_take(map, "viewId", fl_value_new_int(view_id));
       fl_value_set_string_take(map, "textureId",
                                fl_value_new_int(texture_id));
       response = FL_METHOD_RESPONSE(fl_method_success_response_new(map));
     }
+  } else if (g_strcmp0(method, "reset") == 0) {
+    for (const auto& entry : state->controller_players) {
+      auto it = state->players.find(entry.first);
+      if (it != state->players.end()) {
+        it->second->Destroy();
+        state->players.erase(it);
+      }
+    }
+    state->controller_players.clear();
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(nullptr));
   } else if (g_strcmp0(method, "destroy") == 0) {
     const int view_id = static_cast<int>(FlMapInt(args, "viewId", -1));
     auto it = state->players.find(view_id);
+    state->controller_players.erase(view_id);
     if (it != state->players.end()) {
       it->second->Destroy();
       state->players.erase(it);

@@ -545,6 +545,11 @@ MpvVideoSize MpvPlayer::GetVideoSize() const {
   return {video_w_, video_h_};
 }
 
+int64_t MpvPlayer::GetDurationMs() {
+  std::lock_guard<std::mutex> lock(api_mu_);
+  return mpv_ ? static_cast<int64_t>(GetPropertyDouble("duration", 0) * 1000.0) : 0;
+}
+
 std::vector<uint8_t> MpvPlayer::CapturePng() {
   std::vector<uint8_t> rgba;
   int w = 0, h = 0;

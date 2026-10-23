@@ -88,7 +88,7 @@ flutter:
 
 2. `flutter pub get` 后直接 `flutter run`（或 `flutter build macos` / `flutter build ios`）。  
    - **SPM**：`Package.swift` 远程 `binaryTarget` 由 Xcode 自动下载 SGPlayer；宿主 **无需** Scheme Pre-action / 额外脚本  
-   - **CocoaPods**：`prepare_command` 自动 `ensure_sgplayer`（下载预编译 → 本地编译回退）  
+   - **CocoaPods**：准备命令配置了 `ensure_sgplayer`（下载预编译 → 本地编译回退）；本地路径 / 增量安装先显式准备框架，见方式 D  
    - macOS 最低版本 **11.0**（SF Symbols 底栏）；宿主请设置 `MACOSX_DEPLOYMENT_TARGET = 11.0`（见下方 [SPM 包装包最低版本](#spm-包装包最低版本)）
 
 ### 方式 B — 维护者手动 / CI（更新 manifest / Frameworks）
@@ -124,7 +124,33 @@ bash darwin/scripts/sgplayer/ensure_sgplayer.sh ios
 
 ### 方式 D — CocoaPods
 
-关闭 SPM 时，`darwin/kinetic_player.podspec` 的 `prepare_command` 会分别 `ensure` ios / macos；`vendored_frameworks` 指向 `Frameworks/{ios,macos}/...`。终端用户只需 `pod install`（或由 Flutter 构建触发）。
+关闭 SPM 时，`darwin/kinetic_player.podspec` 的 `prepare_command` 配置了分别 `ensure` ios / macos；`vendored_frameworks` 指向 `Frameworks/{ios,macos}/...`。但不能假定本地 `:path` 引用、已安装过的 Pod 或增量构建一定会重新执行准备命令。首次使用本地包，先显式准备当前平台的框架，再运行宿主 App 的 `pod install`。
+
+仅开发 iOS 时，在插件根目录执行：
+
+```bash
+bash darwin/scripts/sgplayer/download_sgplayer.sh ios
+```
+
+此脚本下载 manifest 指定的 iOS 二进制并验证 SHA-256，不会自动触发耗时的源码编译。按需使用代理环境变量。若要源码编译回退，可改用 `ensure_sgplayer.sh ios`。只做 iOS 时无需为了这个错误下载 macOS 框架。
+
+完成后，应存在：
+
+```text
+darwin/Frameworks/ios/SGPlayer.xcframework/
+  Info.plist
+  ios-arm64/SGPlayer.framework/
+    SGPlayer
+    Headers/SGPlayer.h
+```
+
+然后在**宿主 App 的 ios 目录**执行 `pod install`，让 CocoaPods 重新收集已落盘的 `vendored_frameworks` 并生成框架搜索路径；回到 App 根目录重新 `flutter run`。只 Hot Reload 不会更新原生依赖。
+
+`SgNativePlayerBridge.m` 的 `#import <SGPlayer/SGPlayer.h>` 是正确写法。出现 `file not found` 时，先确认上述框架和头文件存在、Podspec 实际路径对应的是哪份插件，以及 `pod install` 是否在下载后重新执行。不要只复制单个头文件或改成机器相关的绝对 include 路径，否则后续仍会缺少其他头文件或链接二进制。
+
+本次本地验证：iOS 框架下载及 SHA-256 校验通过；CocoaPods FileAccessor 能识别 Podspec 的 vendored framework；使用真实 SGPlayer、Flutter 框架完成 Objective-C 桥的 arm64 iOS 对象编译、全部插件 Swift 源码的 iOS 类型检查，以及原生插件动态库的编译和链接。产物已确认为 arm64 / iOS / minOS 13.0。链接器对既有二进制的 common section 对齐给出非致命警告。未据此声称宿主 App 已完成真机启动验证。
+
+桥接层在两种集成方式下的模块结构不同：SPM 使用独立的 `SgNativePlayerBridge` target；CocoaPods 把 Objective-C 桥与 Swift 源码编入同一个 `kinetic_player` target，并通过公开头文件供 Swift 使用。因此 `SgNativePlayer.swift` 只在 `#if SWIFT_PACKAGE` 下导入 `SgNativePlayerBridge`。CocoaPods 下无条件导入会出现 `Unable to find module dependency: SgNativePlayerBridge`，不需要为此修改类名或增加业务工程桥接头。
 
 ### 方式 E — 本地编译
 

@@ -1,3 +1,13 @@
+## Unreleased (local)
+
+- Document explicit SGPlayer binary setup before CocoaPods integration for local/incremental installs; verify the iOS framework/header, the actual Objective-C bridge compilation and all Darwin Swift sources for iOS.
+- Fix CocoaPods iOS/macOS compilation: import the separate `SgNativePlayerBridge` module only under SwiftPM; CocoaPods exposes the bridge through the plugin's public headers. Keep all native class names unchanged.
+- Keep the existing `CommonVideoController` and `CommonVideoPlayerView` names for source constructors, initialize/value/listeners and controller-bound views. Preserve concrete native controller names and the legacy view-ID lifecycle.
+- Release replaced sessions, cancel pending Common initialization on replacement/disposal, and retain listeners across source switches. Split the view builder into its own file without changing its export or class name.
+- Add an opt-in official `video_player` backend (`KineticVideoPlayer.registerWith`), preserving the existing Common API and native engines.
+- Separate controller-owned sessions from rendering views; isolate Android GSY managers, defer audio focus until play, and release late creations and sessions on reset.
+- Add a standalone custom-UI example, adapter regression tests and [usage/compatibility notes](doc/video_player_usage.md).
+
 ## 2.1.2
 
 - **Stable dependency audit (2026-10-16)**: GSYVideoPlayer **14.0.0**, AGP **9.4.1**, Kotlin **2.4.21**, example Gradle **9.8.1** with distribution SHA-256 verification; Mockito **5.24.0**, Kotlin JUnit adapter and JUnit **6.1.3** engine. Enable built-in Kotlin, retain `android.newDsl=false` for Flutter 3.47, and align example subprojects with SDK Build Tools **37.0.0** / NDK **30.0.16248370**. The example falls back to debug signing when release signing is absent.

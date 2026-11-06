@@ -42,6 +42,7 @@ typedef void (^SgErrorChangedBlock)(NSString *_Nullable message, NSInteger code)
 - (NSArray<NSDictionary *> *)getVideoTracks;
 - (BOOL)selectVideoTrack:(NSInteger)index;
 - (NSDictionary *_Nullable)getVideoSize;
+- (int64_t)getDurationMs;
 - (void)setLooping:(BOOL)looping;
 - (NSData *_Nullable)captureFrame;
 - (double)currentVolume;

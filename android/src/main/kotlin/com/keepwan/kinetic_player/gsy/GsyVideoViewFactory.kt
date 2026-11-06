@@ -5,10 +5,12 @@ import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
-class GsyVideoViewFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class GsyVideoViewFactory(private val sessions: GsyVideoSessions) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
         @Suppress("UNCHECKED_CAST")
         val params = args as? Map<String, Any?>
+        val sessionId = (params?.get("sessionId") as? Number)?.toInt()
+        if (sessionId != null) return sessions.attach(context, sessionId)
         return GsyVideoPlatformView(
             context,
             viewId,

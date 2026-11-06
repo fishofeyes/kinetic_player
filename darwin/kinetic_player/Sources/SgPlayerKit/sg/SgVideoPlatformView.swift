@@ -25,6 +25,7 @@ final class SgVideoPlatformView: NSObject, SgPlayerChromeDelegate {
     private var playlist: [String] = []
     private var playlistIndex = 0
     private var autoPlayNext = true
+    private var disposed = false
 
     init(
         frame: CGRect,
@@ -355,6 +356,13 @@ final class SgVideoPlatformView: NSObject, SgPlayerChromeDelegate {
             }
         case "getVideoSize":
             result(player.getVideoSize())
+        case "getVideoMetadata":
+            let size = player.getVideoSize()
+            result([
+                "width": size?["width"] ?? 0,
+                "height": size?["height"] ?? 0,
+                "duration": max(0, player.durationMs()),
+            ] as [String: Any])
         case "setLooping":
             let args = call.arguments as? [String: Any]
             let looping = args?["looping"] as? Bool ?? false
@@ -484,16 +492,21 @@ final class SgVideoPlatformView: NSObject, SgPlayerChromeDelegate {
             player.setHttpRequestOptions(args)
             result(nil)
         case "dispose":
-            if fullscreenPresenter.isFullscreen {
-                fullscreenPresenter.exitFullscreen()
-            }
-            chrome.restoreBrightnessIfNeeded()
-            channel.setMethodCallHandler(nil)
-            player.release()
+            dispose()
             result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    func dispose() {
+        guard !disposed else { return }
+        disposed = true
+        if fullscreenPresenter.isFullscreen { fullscreenPresenter.exitFullscreen() }
+        chrome.restoreBrightnessIfNeeded()
+        channel.setMethodCallHandler(nil)
+        player.release()
+        container.removeFromSuperview()
     }
 }
 
@@ -544,9 +557,11 @@ extension SgVideoPlatformView: FlutterPlatformView {}
 
 final class SgVideoViewFactory: NSObject, FlutterPlatformViewFactory {
     private let messenger: FlutterBinaryMessenger
+    private let sessions: SgVideoSessions
 
-    init(messenger: FlutterBinaryMessenger) {
+    init(messenger: FlutterBinaryMessenger, sessions: SgVideoSessions) {
         self.messenger = messenger
+        self.sessions = sessions
     }
 
 #if os(iOS)
@@ -555,12 +570,18 @@ final class SgVideoViewFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?,
     ) -> FlutterPlatformView {
-        SgVideoPlatformView(frame: frame, viewId: viewId, messenger: messenger, args: args)
+        if let params = args as? [String: Any], let id = params["sessionId"] as? NSNumber {
+            return SgVideoAttachment(sessions.attach(id.int64Value, frame: frame))
+        }
+        return SgVideoPlatformView(frame: frame, viewId: viewId, messenger: messenger, args: args)
     }
 #elseif os(macOS)
     // macOS factory returns NSView directly (no FlutterPlatformView protocol).
     // Retain the controller on the view so channel handlers stay alive.
     func create(withViewIdentifier viewId: Int64, arguments args: Any?) -> NSView {
+        if let params = args as? [String: Any], let id = params["sessionId"] as? NSNumber {
+            return sessions.attach(id.int64Value)
+        }
         let platformView = SgVideoPlatformView(
             frame: .zero,
             viewId: viewId,

@@ -12,8 +12,8 @@ import '../gsy/gsy_video_features.dart';
 import 'mpv_video_features.dart';
 
 class MpvVideoControllerImpl
-    with CommonVideoControllerBridge
-    implements CommonVideoController {
+    extends CommonVideoController
+    with CommonVideoControllerBridge {
   factory MpvVideoControllerImpl(int viewId) {
     final existing = _instances[viewId];
     if (existing != null && !existing._isDisposed) {

@@ -9,7 +9,7 @@ import '../common/kinetic_http_request_options.dart';
 import 'artplayer_ui_config.dart';
 
 /// Stub for non-web platforms. Real implementation is conditionally imported.
-class ArtplayerVideoControllerImpl implements CommonVideoController {
+class ArtplayerVideoControllerImpl extends CommonVideoController {
   ArtplayerVideoControllerImpl(this.viewId) {
     throw UnsupportedError(
       'ArtplayerVideoControllerImpl is only available on Flutter Web.',
@@ -64,8 +64,6 @@ class ArtplayerVideoControllerImpl implements CommonVideoController {
   @override
   Future<void> setHttpRequestOptions(KineticHttpRequestOptions? options) =>
       throw UnimplementedError();
-  @override
-  void Function(Uint8List? bytes)? onScreenshotCaptured;
   @override
   Future<Uint8List?> captureFrame({
     bool highQuality = true,

@@ -811,29 +811,34 @@
     }
   }
 
-  if (action & SGInfoActionTime) {
-    // Suppress stale playhead while an async seek is in flight (prevents UI bounce).
-    if (self.seekInFlight || (stateInfo.playback & SGPlaybackStateSeeking)) {
-      return;
+    if (action & SGInfoActionTime) {
+        // Suppress stale playhead while an async seek is in flight (prevents UI bounce).
+        if (self.seekInFlight || (stateInfo.playback & SGPlaybackStateSeeking)) {
+            return;
+        }
+        int64_t positionMs = 0;
+        int64_t durationMs = 0;
+        int64_t cachedDurationMs = 0;
+        if (CMTIME_IS_NUMERIC(timeInfo.playback)) {
+            positionMs = (int64_t)(CMTimeGetSeconds(timeInfo.playback) * 1000.0);
+        }
+        if (CMTIME_IS_NUMERIC(timeInfo.duration)) {
+            durationMs = (int64_t)(CMTimeGetSeconds(timeInfo.duration) * 1000.0);
+        }
+        if (CMTIME_IS_NUMERIC(timeInfo.cached)) {
+            cachedDurationMs = (int64_t)(CMTimeGetSeconds(timeInfo.cached) * 1000.0);
+        }
+        int64_t bufferedMs = MAX(0, positionMs) + MAX(0, cachedDurationMs);
+        if (durationMs > 0) {
+            bufferedMs = MIN(bufferedMs, durationMs);
+        }
+        NSCAssert(bufferedMs >= 0 && (durationMs <= 0 || bufferedMs <= durationMs),
+                  @"Buffered position must stay within the media duration");
+        self.lastBufferedMs = MAX(0, bufferedMs);
+        if (self.progressHandler) {
+            self.progressHandler(positionMs, durationMs, self.lastBufferedMs);
+        }
     }
-    int64_t positionMs = 0;
-    int64_t durationMs = 0;
-    int64_t bufferedMs = 0;
-    if (CMTIME_IS_NUMERIC(timeInfo.playback)) {
-      positionMs = (int64_t)(CMTimeGetSeconds(timeInfo.playback) * 1000.0);
-    }
-    if (CMTIME_IS_NUMERIC(timeInfo.duration)) {
-      durationMs = (int64_t)(CMTimeGetSeconds(timeInfo.duration) * 1000.0);
-    }
-    if (CMTIME_IS_NUMERIC(timeInfo.cached)) {
-      // SGTimeInfo.cached is the buffered timeline position / end.
-      bufferedMs = (int64_t)(CMTimeGetSeconds(timeInfo.cached) * 1000.0);
-    }
-    self.lastBufferedMs = MAX(0, bufferedMs);
-    if (self.progressHandler) {
-      self.progressHandler(positionMs, durationMs, self.lastBufferedMs);
-    }
-  }
 }
 
 #pragma mark - Mapping

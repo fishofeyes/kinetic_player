@@ -30,6 +30,42 @@ import java.util.concurrent.Executors
  * WebVTT seek preview using GSY demo layout [R.layout.kinetic_video_layout_preview].
  */
 class KineticPreViewGSYVideoPlayer : KineticGSYVideoPlayer {
+    var sessionManager: com.shuyu.gsyvideoplayer.GSYVideoManager? = null
+    var onControllerStateChanged: ((Int) -> Unit)? = null
+
+    override fun setStateAndUi(state: Int) {
+        super.setStateAndUi(state)
+        onControllerStateChanged?.invoke(state)
+    }
+
+    override fun getGSYVideoManager(): com.shuyu.gsyvideoplayer.video.base.GSYVideoViewBridge =
+        sessionManager ?: super.getGSYVideoManager()
+
+    override fun releaseVideos() {
+        val manager = sessionManager
+        if (manager == null) {
+            super.releaseVideos()
+        } else {
+            manager.listener()?.onCompletion()
+            manager.releaseMediaPlayer()
+        }
+    }
+
+    fun prepareForController() {
+        // GSY normally requests audio focus even when startAfterPrepared is false.
+        val focus = mAudioFocusManager
+        mAudioFocusManager = null
+        try {
+            startPlayLogic()
+        } finally {
+            mAudioFocusManager = focus
+        }
+    }
+
+    fun startPreparedForController() {
+        mAudioFocusManager?.requestAudioFocus()
+        startAfterPrepared()
+    }
 
     constructor(context: Context) : super(context)
 

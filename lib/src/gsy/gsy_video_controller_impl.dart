@@ -10,8 +10,8 @@ import '../common/kinetic_ui_config.dart';
 import '../common/platform_guard.dart';
 
 class GSYVideoControllerImpl
-    with CommonVideoControllerBridge
-    implements CommonVideoController {
+    extends CommonVideoController
+    with CommonVideoControllerBridge {
   GSYVideoControllerImpl(this.viewId) {
     assertAndroidPlatform('GSYVideoControllerImpl');
     _channel = MethodChannel('com.example.player/gsy_$viewId');

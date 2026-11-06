@@ -10,8 +10,8 @@ import '../common/platform_guard.dart';
 import 'sg_video_features.dart';
 
 class SGVideoControllerImpl
-    with CommonVideoControllerBridge
-    implements CommonVideoController {
+    extends CommonVideoController
+    with CommonVideoControllerBridge {
   final int viewId;
   late MethodChannel _channel;
   bool _isDisposed = false;

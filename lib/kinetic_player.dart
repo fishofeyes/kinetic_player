@@ -22,3 +22,4 @@ export 'src/web/artplayer_ui_config.dart';
 export 'src/mpv/mpv_video_controller_impl.dart';
 export 'src/mpv/mpv_video_features.dart';
 export 'src/web/artplayer_video_controller.dart';
+export 'src/video_player/kinetic_video_player.dart';

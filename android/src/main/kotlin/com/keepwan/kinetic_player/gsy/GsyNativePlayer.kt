@@ -45,10 +45,13 @@ class GsyNativePlayer(
     private val callbacks: GsyPlayerCallbacks,
     initialUiConfig: GsyUiConfig = GsyUiConfig(),
     private val playTag: String = "kinetic_${UUID.randomUUID()}",
+    independent: Boolean = false,
 ) {
     private val appContext = context.applicationContext
     private val container = FrameLayout(context)
     private val playerView = KineticPreViewGSYVideoPlayer(context)
+    private val manager: GSYVideoManager
+        get() = playerView.sessionManager ?: GSYVideoManager.instance()
     private val mainHandler = Handler(Looper.getMainLooper())
     private val cacheDir = File(appContext.cacheDir, "kinetic_player").apply { mkdirs() }
 
@@ -150,6 +153,12 @@ class GsyNativePlayer(
         }
 
     init {
+        if (independent) {
+            GSYVideoManager.instance()
+            playerView.sessionManager = GSYVideoManager.tmpInstance(playerView)
+            manager.initContext(appContext)
+            playerView.onControllerStateChanged = { state -> emitMappedState(state) }
+        }
         playerView.uiConfig = initialUiConfig
         playerView.onDanmakuPlaybackStart = {
             activePlayer().getOverlayDanmaku()?.onPlaybackStart()
@@ -380,13 +389,31 @@ class GsyNativePlayer(
 
     fun startPlayLogic() {
         if (playerView.currentState == GSYVideoView.CURRENT_STATE_AUTO_COMPLETE) {
-            GSYVideoManager.instance().seekTo(0)
+            manager.seekTo(0)
         }
         playerView.startPlayLogic()
         onPlaybackStarted()
         applySavedVolume()
         emitMappedState(GSYVideoView.CURRENT_STATE_PLAYING)
         reportProgress(force = true)
+    }
+
+    /** Prepare without autoplay; unlike play(), initialize must not emit PLAYING. */
+    fun initialize(url: String) {
+        setUrl(url)
+        playerView.setStartAfterPrepared(false)
+        playerView.prepareForController()
+    }
+
+    fun playPrepared() {
+        if (playerView.currentState == GSYVideoView.CURRENT_STATE_PAUSE) {
+            playerView.startPreparedForController()
+        } else {
+            playerView.setStartAfterPrepared(true)
+            playerView.startPlayLogic()
+        }
+        onPlaybackStarted()
+        applySavedVolume()
     }
 
     fun onVideoPause() {
@@ -422,12 +449,12 @@ class GsyNativePlayer(
     }
 
     private fun applySavedVolume() {
-        val manager = GSYVideoManager.instance().curPlayerManager
+        val playerManager = manager.curPlayerManager
         if (muted) {
-            manager?.setNeedMute(true)
+            playerManager?.setNeedMute(true)
         } else {
-            manager?.setNeedMute(false)
-            manager?.setVolume(savedVolume, savedVolume)
+            playerManager?.setNeedMute(false)
+            playerManager?.setVolume(savedVolume, savedVolume)
         }
         playerView.syncVolumeToolbar(savedVolume, muted)
     }
@@ -447,11 +474,17 @@ class GsyNativePlayer(
     }
 
     fun getVideoSize(): Map<String, Int>? {
-        val width = GSYVideoManager.instance().currentVideoWidth
-        val height = GSYVideoManager.instance().currentVideoHeight
+        val width = manager.currentVideoWidth
+        val height = manager.currentVideoHeight
         if (width <= 0 || height <= 0) return null
         return mapOf("width" to width, "height" to height)
     }
+
+    fun getVideoMetadata(): Map<String, Number> = mapOf(
+        "width" to manager.currentVideoWidth,
+        "height" to manager.currentVideoHeight,
+        "duration" to manager.duration.coerceAtLeast(0L),
+    )
 
     fun listAudioTracks(): List<Map<String, Any?>> =
         GsyAudioTrackHelper.listAudioTracks().map {
@@ -466,7 +499,7 @@ class GsyNativePlayer(
     fun selectAudioTrack(index: Int): Boolean = GsyAudioTrackHelper.selectAudioTrack(index)
 
     fun seekTo(positionMs: Int) {
-        GSYVideoManager.instance().seekTo(positionMs.toLong())
+        manager.seekTo(positionMs.toLong())
         activePlayer().getOverlayDanmaku()?.onSeek(positionMs.toLong())
         reportProgress(force = true)
     }
@@ -536,17 +569,17 @@ class GsyNativePlayer(
         when (core) {
             0 -> {
                 PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
-                GSYVideoManager.instance().releaseMediaPlayer()
+                manager.releaseMediaPlayer()
                 true
             }
             1 -> {
                 PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
-                GSYVideoManager.instance().releaseMediaPlayer()
+                manager.releaseMediaPlayer()
                 true
             }
             2 -> {
                 PlayerFactory.setPlayManager(SystemPlayerManager::class.java)
-                GSYVideoManager.instance().releaseMediaPlayer()
+                manager.releaseMediaPlayer()
                 true
             }
             else -> false
@@ -769,8 +802,8 @@ class GsyNativePlayer(
     }
 
     private fun buildPictureInPictureParams(autoEnter: Boolean): PictureInPictureParams {
-        val width = GSYVideoManager.instance().currentVideoWidth
-        val height = GSYVideoManager.instance().currentVideoHeight
+        val width = manager.currentVideoWidth
+        val height = manager.currentVideoHeight
         val aspectRatio = pictureInPictureAspectRatio(width, height)
         val builder =
             PictureInPictureParams.Builder()
@@ -850,7 +883,7 @@ class GsyNativePlayer(
     }
 
     private fun reportProgress(force: Boolean = false) {
-        val positionMs = GSYVideoManager.instance().currentPosition
+        val positionMs = manager.currentPosition
         val durationMs = playerView.duration.coerceAtLeast(0L)
         checkMidRoll(positionMs)
         progressReporter.report(positionMs, durationMs, force)
@@ -880,6 +913,7 @@ class GsyNativePlayer(
         activePlayer().hideAdChrome()
         GsyPlayerLifecycleRegistry.unregister(this)
         playerView.release()
+        playerView.onControllerStateChanged = null
         progressReporter.reset()
     }
 

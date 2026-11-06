@@ -12,6 +12,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -327,6 +328,13 @@ class PlayerSlot {
           {EncodableValue("width"), EncodableValue(size.width)},
           {EncodableValue("height"), EncodableValue(size.height)},
       }));
+    } else if (method == "getVideoMetadata") {
+      const auto size = player_->GetVideoSize();
+      result->Success(EncodableValue(EncodableMap{
+          {EncodableValue("width"), EncodableValue(size.width)},
+          {EncodableValue("height"), EncodableValue(size.height)},
+          {EncodableValue("duration"), EncodableValue(player_->GetDurationMs())},
+      }));
     } else if (method == "setLooping") {
       player_->SetLooping(GetBool(map, "looping", false));
       result->Success();
@@ -527,13 +535,25 @@ class KineticPlayerPlugin : public flutter::Plugin {
       slot->ApplyCreate(map);
       const int64_t texture_id = slot->texture_id();
       players_[view_id] = std::move(slot);
+      if (GetBool(map, "controllerOwned", false)) controller_players_.insert(view_id);
       result->Success(EncodableValue(EncodableMap{
           {EncodableValue("viewId"), EncodableValue(view_id)},
           {EncodableValue("textureId"), EncodableValue(texture_id)},
       }));
+    } else if (method == "reset") {
+      for (const auto id : controller_players_) {
+        auto it = players_.find(id);
+        if (it != players_.end()) {
+          it->second->Destroy();
+          players_.erase(it);
+        }
+      }
+      controller_players_.clear();
+      result->Success();
     } else if (method == "destroy") {
       const int view_id = static_cast<int>(GetInt(map, "viewId", -1));
       auto it = players_.find(view_id);
+      controller_players_.erase(view_id);
       if (it != players_.end()) {
         it->second->Destroy();
         players_.erase(it);
@@ -549,6 +569,7 @@ class KineticPlayerPlugin : public flutter::Plugin {
   int window_proc_id_ = 0;
   int next_id_ = 1;
   std::map<int, std::unique_ptr<PlayerSlot>> players_;
+  std::set<int> controller_players_;
   std::unique_ptr<flutter::MethodChannel<EncodableValue>> channel_;
 };
 

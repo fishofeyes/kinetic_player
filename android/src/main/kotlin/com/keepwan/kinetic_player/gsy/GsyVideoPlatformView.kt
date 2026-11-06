@@ -14,6 +14,8 @@ class GsyVideoPlatformView(
     messenger: BinaryMessenger,
     creationParams: Map<String, Any?>?,
 ) : PlatformView, MethodChannel.MethodCallHandler {
+    private val controllerOwned = creationParams?.get("controllerOwned") == true
+    private var disposed = false
     private val channel = MethodChannel(messenger, PlayerConstants.gsyChannelName(viewId))
     private val uiConfig = GsyUiConfig.fromCreationParams(creationParams)
     private val playTag =
@@ -46,6 +48,7 @@ class GsyVideoPlatformView(
             },
             initialUiConfig = uiConfig,
             playTag = playTag,
+            independent = controllerOwned,
         )
 
     init {
@@ -92,8 +95,12 @@ class GsyVideoPlatformView(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "initialize" -> {
+                player.initialize(call.argument<String>("url") ?: "")
+                result.success(null)
+            }
             "play" -> {
-                player.startPlayLogic()
+                if (controllerOwned) player.playPrepared() else player.startPlayLogic()
                 result.success(null)
             }
             "pause" -> {
@@ -137,6 +144,7 @@ class GsyVideoPlatformView(
                 if (ok) result.success(null) else result.error("TRACK", "Audio track not found", null)
             }
             "getVideoSize" -> result.success(player.getVideoSize())
+            "getVideoMetadata" -> result.success(player.getVideoMetadata())
             "setLooping" -> {
                 player.setLooping(call.argument<Boolean>("looping") ?: false)
                 result.success(null)
@@ -316,6 +324,8 @@ class GsyVideoPlatformView(
     }
 
     override fun dispose() {
+        if (disposed) return
+        disposed = true
         channel.setMethodCallHandler(null)
         player.release()
     }

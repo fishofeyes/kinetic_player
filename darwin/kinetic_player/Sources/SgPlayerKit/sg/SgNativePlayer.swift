@@ -3,7 +3,11 @@ import UIKit
 #elseif os(macOS)
 import AppKit
 #endif
+// SwiftPM builds the bridge as a separate target. CocoaPods includes its public
+// header in kinetic_player's own module, so there is no separate module to import.
+#if SWIFT_PACKAGE
 import SgNativePlayerBridge
+#endif
 
 protocol SgPlayerCallbacks: AnyObject {
     func onPlayerStateChanged(_ state: CommonPlayerState)
@@ -103,6 +107,7 @@ final class SgNativePlayer: NSObject {
     }
 
     func setLooping(_ looping: Bool) { bridge.setLooping(looping) }
+    func durationMs() -> Int64 { bridge.getDurationMs() }
     func captureFrame() -> Data? { bridge.captureFrame() }
     func currentVolume() -> Double { bridge.currentVolume() }
     func isMuted() -> Bool { bridge.isMuted() }

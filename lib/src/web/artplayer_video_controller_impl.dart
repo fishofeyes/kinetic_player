@@ -16,7 +16,7 @@ import 'artplayer_view_host.dart';
 ///
 /// Talks to [ArtplayerViewHost] via an in-Dart registry (no MethodChannel),
 /// because both ends run in the same isolate on Flutter Web.
-class ArtplayerVideoControllerImpl implements CommonVideoController {
+class ArtplayerVideoControllerImpl extends CommonVideoController {
   ArtplayerVideoControllerImpl(this.viewId) {
     assertWebPlatform('ArtplayerVideoControllerImpl');
     final host = ArtplayerViewRegistry.get(viewId);
@@ -153,8 +153,6 @@ class ArtplayerVideoControllerImpl implements CommonVideoController {
         options?.toMethodChannelArgs() ?? const <String, dynamic>{},
       );
 
-  @override
-  void Function(Uint8List? bytes)? onScreenshotCaptured;
 
   @override
   Future<Uint8List?> captureFrame({
